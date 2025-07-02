@@ -1,70 +1,52 @@
-# Getting Started with Create React App
+# React Quizzer
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**React Quizzer** е модерен SPA, създаден за провеждане на интерактивни куизове, който симулира бекенд чрез `json-server`.
 
-## Available Scripts
+## 🚀 Основна функционалност
 
-In the project directory, you can run:
+- **Динамично зареждане на въпроси**  
+  Въпросите се fetch-ват от локален REST API (`http://localhost:9000/questions`), работещ на `json-server`.
 
-### `npm start`
+- **Потребителски поток**  
+  1. **Start Screen** – бутон “Start Quiz”  
+  2. **Quiz Screen** – задава въпрос, показва възможни отговори  
+  3. **Progress Bar** – визуализира напредъка (брой отговорени въпроси / общ брой)  
+  4. **Timer** – обратно отброяване за всеки въпрос  
+  5. **Finish Screen** – показва точките и най-висок резултат, бутон “Restart Quiz”
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+- **Точки и най-висок резултат**  
+  Изчисляват се динамично при всеки отговор, като се сравняват с локално съхранения “high score” (например в `localStorage`).
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+- **Рестарт**  
+  Може да рестартирате куиза, като състоянието се нулира и API се презареждат въпросите.
 
-### `npm test`
+## 🛠 Технологичен стек и архитектура
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+| Компонент / Hook        | Технология / Подход      |
+|-------------------------|--------------------------|
+| **React Context API**   | Глобално състояние на куиза (въпроси, текущ индекс, точки, статус) |
+| **useReducer**          | Централизирана логика за промяна на state (actions: `loading`, `ready`, `answer`, `next`, `finish`, `restart`, `tick`) |
+| **useEffect**           | Асинхронно fetch-ване на данни от API при стартиране или рестарт |
+| **json-server**         | Локален фейк REST API за въпроси (CRUD за разработка и тестове) |
+| **Компонентен подход**  |  
+  - `Header`, `StartScreen`, `Question`, `ProgressBar`, `Timer`, `FinishScreen`, `Loader`, `Error`, `Button`  
+  - Всеки компонент получава данни и dispatch чрез контекст |
+| **Derived State**       | Изчислява `numOfQuestions`, `totalPoints`, `highScore` на база текущ state |
+| **Статуси**             | `loading` → `ready` → `active` → `finished` → (`ready` при рестарт) |
 
-### `npm run build`
+## ⚙️ Инсталация и стартиране
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+```bash
+# Клонирай репото
+git clone https://github.com/your-username/react-quizzer.git
+cd react-quizzer
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+# Инсталирай зависимости
+npm install
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+# Стартирай fake API (json-server)
+npm run server
+# (предполага се, че в package.json има скрипт "server": "json-server --watch db.json --port 9000")
 
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+# В нов терминал стартирай dev сървър
+npm start
